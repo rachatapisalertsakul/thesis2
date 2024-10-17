@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Maintenance Notification System - ตรวจสอบสถานะ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('immage/homebg.png') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            margin-right: 20px;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #f0f0f0;
+        }
+
+        .navbar-text {
+            color: #fff;
+            font-size: 18px;
+            margin-left: 20px;
+            padding: 5px 15px;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            margin-left: auto;
+            margin-right: 30px;
+        }
+
+        .sidebar {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            width: 250px;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow: auto;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            margin-left: 270px;
+            padding: 80px 20px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .status-check {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .status-check h2 {
+            margin-top: 0;
+            color: #fff;
+        }
+
+        .request-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .request-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .request-item p {
+            margin: 5px 0;
+        }
+
+        .request-item select {
+            padding: 8px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #333;
+        }
+
+        .request-item button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .request-item button:hover {
+            background-color: #ff3333;
+        }
+
+        .no-request {
+            text-align: center;
+            font-size: 18px;
+            color: #ccc;
+        }
+
+        .search-bar {
+            margin-top: 30px;
+            display: flex; /* Make it flex container */
+            align-items: center; /* Center items vertically */
+        }
+
+        .search-bar input {
+            padding: 10px;
+            width: 200px; /* Adjust width as needed */
+            border: none;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+
+        /* New styles for status colors */
+        .status-in-progress {
+            background-color: red;
+            color: white;
+        }
+
+        .status-completed {
+            background-color: green;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="home.html">หน้าหลัก</a>
+        <span class="navbar-text">ผู้ดูแลระบบหอพัก</span>
+    </div>
+    <div class="sidebar">
+        <a href="petition.html">ใบคำร้อง</a>
+        <a href="status-check.html">ตรวจสอบสถานะ</a>
+        <a href="admin-info.html">ข้อมูลการดูแลระบบ</a>
+        <a href="technician-info.html">ข้อมูลช่าง</a>
+        
+        <!-- Move the search bar here -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="ค้นหา...">
+            <button onclick="searchRequests()">ค้นหา</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="status-check">
+            <h2>ตรวจสอบสถานะคำร้อง</h2>
+            <div class="request-list" id="requestList">
+                <!-- List will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function renderRequests(filteredRequests) {
+            let requests = JSON.parse(localStorage.getItem('requests')) || [];
+            if (filteredRequests) {
+                requests = filteredRequests;
+            }
+
+            const requestList = document.getElementById('requestList');
+            requestList.innerHTML = ''; 
+
+            if (requests.length > 0) {
+                requests.forEach((request, index) => {
+                    const requestItem = document.createElement('div');
+                    requestItem.className = 'request-item';
+                    requestItem.innerHTML = `
+                        <p><strong>ชื่อผู้ร้อง:</strong> ${request.name}</p>
+                        <p><strong>หมายเลขห้อง:</strong> ${request.roomNumber}</p>
+                        <p><strong>รายละเอียด:</strong> ${request.details}</p>
+                        <p><strong>วันที่:</strong> ${request.petitionDate}</p>
+                        <p><strong>สถานะ:</strong> 
+                            <select class="${request.status === 'กำลังดำเนินการ' ? 'status-in-progress' : 'status-completed'}" onchange="updateStatus(${index}, this.value)">
+                                <option value="กำลังดำเนินการ" ${request.status === 'กำลังดำเนินการ' ? 'selected' : ''}>กำลังดำเนินการ</option>
+                                <option value="เสร็จสิ้น" ${request.status === 'เสร็จสิ้น' ? 'selected' : ''}>เสร็จสิ้น</option>
+                            </select>
+                        </p>
+                        <button onclick="deleteRequest(${index})">ลบคำร้อง</button>
+                    `;
+                    requestList.appendChild(requestItem);
+                });
+            } else {
+                const noRequestItem = document.createElement('div');
+                noRequestItem.className = 'no-request';
+                noRequestItem.textContent = 'ไม่มีคำร้อง';
+                requestList.appendChild(noRequestItem);
+            }
+        }
+
+        function updateStatus(index, newStatus) {
+            let requests = JSON.parse(localStorage.getItem('requests')) || [];
+            requests[index].status = newStatus;
+
+            localStorage.setItem('requests', JSON.stringify(requests));
+
+            renderRequests();
+        }
+
+        function deleteRequest(index) {
+            let requests = JSON.parse(localStorage.getItem('requests')) || [];
+            requests.splice(index, 1); 
+
+            localStorage.setItem('requests', JSON.stringify(requests));
+
+            renderRequests();
+        }
+
+        function searchRequests() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let requests = JSON.parse(localStorage.getItem('requests')) || [];
+
+            const filteredRequests = requests.filter(request =>
+                request.name.toLowerCase().includes(searchTerm) ||
+                request.roomNumber.toLowerCase().includes(searchTerm)
+            );
+
+            renderRequests(filteredRequests);
+        }
+
+        window.onload = function() {
+            renderRequests(); 
+        }
+    </script>
+</body>
+</html>

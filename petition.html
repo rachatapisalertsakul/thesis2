@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Maintenance Notification System - ใบคำร้อง</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('immage/homebg.png') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            margin-right: 20px;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #f0f0f0;
+        }
+
+        .navbar-text {
+            color: #fff;
+            font-size: 18px;
+            margin-left: 20px;
+            padding: 5px 15px;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            margin-left: auto;
+            margin-right: 30px;
+        }
+
+        .sidebar {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            width: 250px;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            overflow: auto;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            margin-left: 270px;
+            padding: 80px 20px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            backdrop-filter: blur(10px); /* เพิ่มความเบลอให้พื้นหลัง */
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .form-group input[readonly] {
+            background-color: #444;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="home.html">หน้าหลัก</a>
+        <span class="navbar-text">ผู้ดูแลระบบหอพัก</span>
+    </div>
+    <div class="sidebar">
+        <a href="petition.html">ใบคำร้อง</a>
+        <a href="status-check.html">ตรวจสอบสถานะ</a>
+        <a href="admin-info.html">ข้อมูลการดูแลระบบ</a>
+        <a href="technician-info.html">ข้อมูลช่าง</a>
+    </div>
+    <div class="container">
+        <div class="form-container">
+            <h2>กรอกใบคำร้อง</h2>
+            <form id="petitionForm">
+                <div class="form-group">
+                    <label for="name">ชื่อผู้ร้อง</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="roomNumber">หมายเลขห้อง</label>
+                    <input type="text" id="roomNumber" name="roomNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="details">รายละเอียดปัญหา</label>
+                    <textarea id="details" name="details" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="date">วันที่</label>
+                    <input type="text" id="date" name="date" readonly>
+                </div>
+                <div class="form-group">
+                    <button type="submit">ส่งคำร้อง</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ตั้งค่าให้วันที่เป็นวันปัจจุบันโดยอัตโนมัติ
+        document.getElementById('date').value = new Date().toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        document.getElementById('petitionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const roomNumber = document.getElementById('roomNumber').value;
+            const details = document.getElementById('details').value;
+            const petitionDate = document.getElementById('date').value;
+            const status = 'กำลังดำเนินการ';
+
+            const request = {
+                name,
+                roomNumber,
+                details,
+                petitionDate,
+                status
+            };
+
+            let requests = JSON.parse(localStorage.getItem('requests')) || [];
+            requests.push(request);
+            localStorage.setItem('requests', JSON.stringify(requests));
+
+            alert('ส่งคำร้องเรียบร้อยแล้ว!');
+            window.location.href = 'status-check.html';
+        });
+    </script>
+</body>
+</html>
